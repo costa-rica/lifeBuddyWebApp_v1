@@ -1,0 +1,6 @@
+__pycache__/
+*.ipynb
+LifeBuddyWebApp/__pycache__/
+*.zip
+*log.txt
+
