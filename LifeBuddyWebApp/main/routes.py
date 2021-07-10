@@ -1,3 +1,4 @@
+from flask import Blueprint
 from flask import render_template, url_for, redirect, flash, request, abort, session,\
     Response, current_app, send_from_directory
 from LifeBuddyWebApp import db, bcrypt, mail

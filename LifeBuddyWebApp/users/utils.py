@@ -1,8 +1,8 @@
 from flask import Blueprint
 from flask import render_template, url_for, redirect, flash, request, abort, session,\
     Response, current_app
-from fileShareApp import db, bcrypt, mail
-from fileShareApp.models import Post, User
+from LifeBuddyWebApp import db, bcrypt, mail
+from LifeBuddyWebApp.models import Post, User
 
 from flask_login import login_user, current_user, logout_user, login_required
 import secrets

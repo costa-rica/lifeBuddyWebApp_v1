@@ -25,7 +25,6 @@ users = Blueprint('users', __name__)
 
 @users.route("/", methods=["GET","POST"])
 @users.route("/home", methods=["GET","POST"])
-@login_required
 def home():
     
     return render_template('home.html')
