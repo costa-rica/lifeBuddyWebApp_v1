@@ -1,1 +1,82 @@
-/* No CSS *//*# sourceMappingURL=main.css.map */
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;0,900;1,300&display=swap");
+body {
+  background: #7fa0bd;
+  margin: 0;
+  font-family: Roboto;
+}
+
+.navbar {
+  /*Production*/
+  background: #f1b40b;
+  /*for dev 
+    background: rgb(241, 180, 11);*/
+  /*for dev 
+    background: rgb(241, 180, 11);*/
+  padding: 2em;
+}
+
+.navbar img.lb-logo {
+  /*width: 230px;*/
+  height: 230px;
+  margin: -240px 0 -140px -180px;
+  /*top, _ bottom right left side*/
+}
+
+.navbar ul#nav_horizontal_list li {
+  list-style-type: none;
+  float: right;
+  display: inline;
+  padding-left: 1em;
+}
+
+img.mobile-menu {
+  display: none;
+}
+
+.wider_input_login {
+  width: 300px;
+}
+
+/*HOME*/
+section.Home {
+  padding: 100px 10px 100px 5px;
+}
+
+section.Home .home_link_list {
+  list-style-type: none;
+}
+
+/*Dashboard*/
+section.dashboard {
+  padding: 100px 10px 100px 5px;
+}
+
+section.dashboard .forecast_chart_div {
+  margin: 50px 0 0 0;
+  width: 1000px;
+  height: 200px;
+  background-color: #5fc45f;
+  border-radius: 3em;
+}
+
+section.dashboard .forecast_chart_div > label {
+  padding: 5px 0 0 30px;
+}
+
+section.dashboard .current_chart_div {
+  margin: 50px 0 0 0;
+  width: 1000px;
+  height: 200px;
+  background-color: #9ec59e;
+  border-radius: 3em;
+}
+
+section.dashboard .current_chart_div > label {
+  padding: 5px 0 0 30px;
+}
+
+/*Upload Health Data*/
+section.upload_health_data {
+  padding: 100px 10px 100px 5px;
+}
+/*# sourceMappingURL=main.css.map */

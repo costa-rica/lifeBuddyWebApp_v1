@@ -1,13 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
+
     {% extends "layout.html" %}
-    {% block title %} Login {% endblock %}
+    {% block title %} LifeBuddy Home {% endblock %}
     {% block main %}
+<section class="Home">
+    <div class="container">
 
+        <h1>Welcome to Life Buddy</h1>
 
+        <ul class="home_link_list">
+            {% if current_user.is_authenticated %}
+            <li><a href="{{ url_for('users.logout') }}">Logout</a></li>
+            
+            <li><a href="">Reports</a></li>
+            
+            <li><a href="{{ url_for('main.dashboard') }}">Dashboard</a></li>
+            
+            {% else %}
+            <li><a href="{{ url_for('users.login') }}">Login</a></li>
+            {% endif %}
+        </ul>
 
-    Home page
-
+    </div>
+</section>
 
 {% endblock %}
-</html>

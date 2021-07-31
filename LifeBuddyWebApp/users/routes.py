@@ -39,11 +39,11 @@ def register():
     if request.method == 'POST':
         if form.validate_on_submit():
             hashed_password=bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-            userPermission1=userPermission(form.email.data)
-            if userPermission1[0]:
-                user=User(email=form.email.data, password=hashed_password, permission=userPermission1[1])
-            else:
-                user=User(email=form.email.data, password=hashed_password)
+            # userPermission1=userPermission(form.email.data)
+            # if userPermission1[0]:
+                # user=User(email=form.email.data, password=hashed_password, permission=userPermission1[1])
+            # else:
+            user=User(email=form.email.data, password=hashed_password, username=form.username.data)
             db.session.add(user)
             db.session.commit()
             flash(f'You are now registered! You can login.', 'success')

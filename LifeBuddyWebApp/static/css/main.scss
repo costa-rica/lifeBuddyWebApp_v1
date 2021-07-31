@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;0,900;1,300&display=swap');
+body {
+    background: rgb(127, 160, 189);
+    margin: 0;
+    font-family: Roboto;
+}
+
+
+.navbar {
+    /*Production*/
+    background: rgb(241, 180, 11);
+    /*for dev 
+    background: rgb(241, 180, 11);*/
+    /*for dev 
+    background: rgb(241, 180, 11);*/
+    padding: 2em;
+
+    img.lb-logo {
+	/*width: 230px;*/
+	height: 230px;
+	margin:  -240px 0 -140px -180px;/*top, _ bottom right left side*/
+    }
+    
+    ul#nav_horizontal_list li {
+        list-style-type: none;
+        float: right;
+        display: inline;
+        padding-left:1em;
+
+    }    
+}
+
+img.mobile-menu {
+    display: none;
+}
+
+.wider_input_login{
+    width: 300px;    
+}
+
+/*HOME*/
+section.Home {
+    padding: 100px 10px 100px 5px;
+
+    .home_link_list{
+        list-style-type: none;
+    }
+}
+
+/*Dashboard*/
+section.dashboard {
+    padding: 100px 10px 100px 5px;
+    .forecast_chart_div{
+        margin: 50px 0 0 0;
+        width: 1000px;
+        height: 200px;
+        background-color: rgb(95, 196, 95);
+        border-radius: 3em;
+
+    }
+    .forecast_chart_div > label{
+        padding: 5px 0 0 30px;
+    }
+    .current_chart_div{
+        margin: 50px 0 0 0;
+        width: 1000px;
+        height: 200px;
+        background-color: rgb(158, 197, 158);
+        border-radius: 3em;
+
+    }
+    .current_chart_div > label{
+        padding: 5px 0 0 30px;
+    }
+}
+
+
+/*Upload Health Data*/
+section.upload_health_data {
+    padding: 100px 10px 100px 5px;
+}

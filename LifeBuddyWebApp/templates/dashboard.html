@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block title %} LB Dashboard {% endblock %}
+{% block main %}
+
+<section class="dashboard">
+    <div class="container">
+        <form method="POST" action="" enctype="multipart/form-data">
+            
+            <h1>LifeBuddy Dashboard</h1>
+            <div class="forecast_chart_div">
+                <label>Forecast Chart</label>
+            </div>
+
+            <div class="current_chart_div">
+                <label>Current Chart</label>
+            </div>
+            <a href="{{ url_for('main.upload_health_data') }}">Upload Health Data</a>
+        </form>
+    </div>
+</section>
+{% endblock %}

@@ -17,3 +17,9 @@ main = Blueprint('main', __name__)
 @login_required
 def dashboard():
     return render_template('dashboard.html')
+
+
+@main.route("/upload health data", methods=["GET","POST"])
+@login_required
+def upload_health_data():
+    return render_template('upload_health_data.html')

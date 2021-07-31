@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block title %} LB Upload Data {% endblock %}
+{% block main %}
+
+<section class="upload_health_data">
+    <div class="container">
+        <form method="POST" action="" enctype="multipart/form-data">
+            
+            <h1>LifeBuddy Upload Health Data</h1>
+            <input type="file" class="form-control" name="excelFileUpload"/><br/>
+            <button type="submit" class="btn btn-primary" name="uploadExcel" value=True>Upload Excel</button><br/>
+            
+        </form>
+    </div>
+</section>
+{% endblock %}

@@ -12,8 +12,7 @@ from LifeBuddyWebApp import db
 
 
 class RegistrationForm(FlaskForm):
-    # username = StringField('Username',
-                           # validators=[DataRequired(),Length(min=2, max=20)])
+    username = StringField('Username')
     email = StringField('Email',
                         validators=[DataRequired(),Email()])
     password = PasswordField('Password', validators=[DataRequired()])
