@@ -1,6 +1,5 @@
 __pycache__/
-*.ipynb
 LifeBuddyWebApp/__pycache__/
 *.zip
 *log.txt
-
+misc_not_for_git/

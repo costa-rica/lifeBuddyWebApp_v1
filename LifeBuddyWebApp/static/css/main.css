@@ -79,4 +79,8 @@ section.dashboard .current_chart_div > label {
 section.upload_health_data {
   padding: 100px 10px 100px 5px;
 }
+
+section.upload_health_data .input_1 {
+  width: 15%;
+}
 /*# sourceMappingURL=main.css.map */
