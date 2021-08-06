@@ -34,6 +34,12 @@ def upload_health_data():
         print('formDict:::', formDict)
         print('filesDict:::', filesDict)
         if formDict.get('upload_file_button'):
+            # print(dir(filesDict.get('uploaded_file')))
+            # print('filename:::',filesDict.get('uploaded_file').filename)
+            if filesDict.get('uploaded_file').filename=='':
+                flash(f'File not selected', 'warning')
+                return redirect(url_for('main.upload_health_data'))
+                
             print('upload button pressed')
             #save file 
             uploaded_file = request.files['uploaded_file']
@@ -51,7 +57,6 @@ def upload_health_data():
             polar_data_dict={}
             for i in polar_zip.filelist:
                 polar_data_dict[i.filename]=json.loads(polar_zip.read(i.filename))
-            
             
             #get files to df dict
             polar_df_dict=json_dict_to_df_dict(polar_data_dict)
