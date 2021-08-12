@@ -4,7 +4,7 @@ from wtforms import StringField, PasswordField, SubmitField, BooleanField\
     , TextAreaField, DateTimeField, FloatField, DateField, TimeField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from wtforms_sqlalchemy.fields import QuerySelectField
-from LifeBuddyWebApp.models import User, Post, Variables
+from LifeBuddyWebApp.models import User, Post, Health_description, Health_measure
 from flask_login import current_user
 from datetime import datetime
 from LifeBuddyWebApp import db

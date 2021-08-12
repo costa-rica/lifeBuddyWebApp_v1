@@ -3,7 +3,7 @@ from flask import Blueprint
 from flask import render_template, url_for, redirect, flash, request, abort, session,\
     Response, current_app
 from LifeBuddyWebApp import db, bcrypt, mail
-from LifeBuddyWebApp.models import User, Post, Variables
+from LifeBuddyWebApp.models import User, Post, Health_description, Health_measure
 from LifeBuddyWebApp.posts.forms import PostForm
 from LifeBuddyWebApp.posts.utils import saveScreenshot
 from flask_login import login_user, current_user, logout_user, login_required

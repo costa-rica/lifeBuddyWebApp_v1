@@ -22,7 +22,7 @@ class User(db.Model, UserMixin):
     theme = db.Column(db.Text)
     time_stamp = db.Column(db.DateTime, default=datetime.now)
     posts = db.relationship('Post', backref='author', lazy=True)
-    variable = db.relationship('Variables', backref='users_var', lazy=True)
+    variable = db.relationship('Health_description', backref='users_health_data', lazy=True)
     # track_inv = db.relationship('Tracking_inv', backref='updator_inv', lazy=True)
 
 
@@ -54,24 +54,36 @@ class Post(db.Model):
         return f"Post('{self.title}','{self.date_posted}')"
 
 
-class Variables(db.Model):
+class Health_description(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     var_activity = db.Column(db.Text) #walking, running, empty is ok for something like mood
     var_type = db.Column(db.Text) #heart rate, mood, weight, etc.
-    var_datetime_utc = db.Column(db.DateTime, nullable=True)
     var_periodicity = db.Column(db.Text)
-    var_value = db.Column(db.Text)
     var_unit = db.Column(db.Text)
     var_timezone_utc_delta_in_mins = db.Column(db.Float) #difference bewteen utc and timezone of exercise
     time_stamp_utc = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id=db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    source_filename =db.Column(db.Text) 
-    # km_tracking_id = db.relationship('Tracking_inv', backref='update_inv_record', lazy=True)
+    source_filename =db.Column(db.Text)
+    
     
 
     def __repr__(self):
-        return f"Variables('{self.id}',var_type:'{self.var_type}'," \
-        f"'var_date: {self.var_datetime_utc}', var_value: '{self.var_value}', var_unit: '{self.var_unit}')"
+        return f"Health_description('{self.id}',var_activity:'{self.var_activity}'," \
+        f"'var_type: {self.var_type}', var_unit: '{self.var_unit}', time_stamp_utc: '{self.time_stamp_utc}')"
     
 
+
+class Health_measure(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    description_id=db.Column(db.Integer, db.ForeignKey('health_description.id'), nullable=False)
+    var_datetime_utc = db.Column(db.DateTime, nullable=True)
+    var_value = db.Column(db.Text)
+    
+    def __repr__(self):
+        return f"Variables('{self.id}',description_id:'{self.description_id}'," \
+        f"'var_datetime_utc: {self.var_datetime_utc}', var_value: '{self.var_value}')"
+        
+        
+        
+        
 

@@ -2,7 +2,7 @@ from flask import Blueprint
 from flask import render_template, url_for, redirect, flash, request, abort, session,\
     Response, current_app, send_from_directory
 from LifeBuddyWebApp import db, bcrypt, mail
-from LifeBuddyWebApp.models import User, Variables
+from LifeBuddyWebApp.models import User, Post, Health_description, Health_measure
 from flask_login import login_user, current_user, logout_user, login_required
 import secrets
 import os
@@ -59,13 +59,14 @@ def upload_health_data():
                 polar_data_dict[i.filename]=json.loads(polar_zip.read(i.filename))
             
             #get files to df dict
-            polar_df_dict=json_dict_to_df_dict(polar_data_dict)
+            polar_df_dict1, polar_df_dict2=json_dict_to_df_dict(polar_data_dict)
             
             #upload to database
             skip_count=0
-            for i,j in polar_df_dict.items():
-                if i not in [i[0] for i in db.session.query(Variables.source_filename).all()]:
-                    j.to_sql('variables',db.engine,if_exists='append', index=False)
+            for i,j in polar_df_dict1.items():
+                if i not in [i[0] for i in db.session.query(Health_description.source_filename).all()]:
+                    j.to_sql('health_description',db.engine,if_exists='append', index=False)
+                    polar_df_dict2[i].to_sql('health_measure',db.engine,if_exists='append', index=False)
                 else:
                     skip_count+=1
             
