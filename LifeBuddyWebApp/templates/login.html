@@ -56,6 +56,13 @@
                             <a href="{{ url_for('users.reset_password') }}">forgot password?</a>
                         </small>
                     </div>
+
+                    <div class='login_as_guest'>
+                        <a href="{{ url_for('users.login', email_entry='guest@lifebuddy.com', pass_entry='test' ) }}">
+                            Login as guest</a>
+                    </div>
+                    
+
                 </div>
 
 
@@ -75,5 +82,21 @@
             <a href="{{ url_for('users.register') }}">Register</a>
         
     </section>
+
+
+<script>
+    let record_type_select = document.getElementById('guest_signin');
+    var email_textbox = document.getElementById('email');
+    var password_textbox = document.getElementById('password');
+
+
+    function showMessage1(){
+        var email_txt= 'guest@lifebuddy.com';
+        var password_txt= 'test';
+        email_textbox.innerHTML = email_txt;
+        password_textbox.innerHTML = password_txt;
+    }
+
+</script>
 
     {% endblock %}

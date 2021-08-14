@@ -8,6 +8,9 @@ from LifeBuddyWebApp.models import User, Post, Health_description, Health_measur
 from flask_login import current_user
 from datetime import datetime
 from LifeBuddyWebApp import db
+from wtforms.widgets import PasswordInput
+
+
 
 
 
@@ -36,10 +39,22 @@ class RegistrationForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     email = StringField('Email',
-                        validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
+                        validators=[DataRequired(), Email()], render_kw={"new_email": "guest1@lifebuddy.com"})
+    password = PasswordField('Password', render_kw={'pass_entry':'test'}, validators=[DataRequired()])
+
+    
     remember = BooleanField('Remember me')
     submit = SubmitField('Login')
+
+class LoginForm2(FlaskForm):
+    email = StringField('Email',
+                        validators=[DataRequired(), Email()])
+    # password = PasswordField('Password', render_kw={'placeholder':'test'}, validators=[DataRequired()])
+    password = StringField('Password', widget=PasswordInput(hide_value=False), validators=[DataRequired()])
+    
+    remember = BooleanField('Remember me')
+    submit = SubmitField('Login')
+
 
 class UpdateAccountForm(FlaskForm):
     # username = StringField('Username',

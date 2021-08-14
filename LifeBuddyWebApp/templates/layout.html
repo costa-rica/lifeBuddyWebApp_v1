@@ -37,12 +37,16 @@
     <div class="navbar">
         <div class="container">
             <a class="logo" href="#">
-                <img id="lb-logo" class="lb-logo" src="../static/images/thegoodeconomistlogo20210322.png" alt="LB logo">
+                <a href="https://thegoodeconomist.com">
+                    <img id="lb-logo" class="lb-logo" src="../static/images/thegoodeconomistlogo20210322.png" alt="LB logo">
+                </a>
+                
             </a>
-
+            {% if current_user.is_authenticated %}
             <div> <h2>{{ current_user.username }}</h2>
                 <small>(is currently signed in)</small>
             </div>
+            {% endif %}
 
             <img id="mobile-cta" class="mobile-menu" src="../static/images/menu.svg" alt="Open Navigation">
             <nav>

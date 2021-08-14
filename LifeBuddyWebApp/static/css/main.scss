@@ -18,7 +18,7 @@ body {
     img.lb-logo {
 	/*width: 230px;*/
 	height: 230px;
-	margin:  -240px 0 -140px -180px;/*top, _ bottom right left side*/
+	margin:  -240px 0 -140px -520px;/*top, _ bottom right left side*/
     }
     
     ul#nav_horizontal_list li {
@@ -37,6 +37,22 @@ img.mobile-menu {
 .wider_input_login{
     width: 300px;    
 }
+
+/*Login*/
+section.LoginSection {
+    padding: 100px 10px 100px 5px;
+    .container{
+        .login_as_guest{
+            background-color: rgb(195, 233, 231);
+            border-radius: 3em;
+            width:150px;
+            padding-left:10px;
+        }
+    }
+
+
+}
+
 
 /*HOME*/
 section.Home {

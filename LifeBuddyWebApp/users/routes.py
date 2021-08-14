@@ -5,7 +5,7 @@ from flask import render_template, url_for, redirect, flash, request, abort, ses
 from LifeBuddyWebApp import db, bcrypt, mail
 from LifeBuddyWebApp.models import User, Post, Health_description, Health_measure
 from LifeBuddyWebApp.users.forms import RegistrationForm, LoginForm, UpdateAccountForm, \
-    RequestResetForm, ResetPasswordForm
+    RequestResetForm, ResetPasswordForm, LoginForm2
 from flask_login import login_user, current_user, logout_user, login_required
 import secrets
 import os
@@ -59,7 +59,15 @@ def login():
     # print('***in login form****')
     if current_user.is_authenticated:
         return redirect(url_for('users.home'))
-    form = LoginForm()
+    form = LoginForm2()
+    print('request.args::::',request.args)
+    email_entry=request.args.get('email_entry')
+    pass_entry=request.args.get('pass_entry')
+    if request.args.get('email_entry'):
+        form.email.data=request.args.get('email_entry')
+        form.password.data=request.args.get('pass_entry')
+        print('pass_entry:::', request.args.get('pass_entry'))
+    
     if form.validate_on_submit():
         print('login - form.validate_on_submit worked')
         user=User.query.filter_by(email=form.email.data).first()

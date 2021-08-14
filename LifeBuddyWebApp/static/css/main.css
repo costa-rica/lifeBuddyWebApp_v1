@@ -18,7 +18,7 @@ body {
 .navbar img.lb-logo {
   /*width: 230px;*/
   height: 230px;
-  margin: -240px 0 -140px -180px;
+  margin: -240px 0 -140px -520px;
   /*top, _ bottom right left side*/
 }
 
@@ -35,6 +35,18 @@ img.mobile-menu {
 
 .wider_input_login {
   width: 300px;
+}
+
+/*Login*/
+section.LoginSection {
+  padding: 100px 10px 100px 5px;
+}
+
+section.LoginSection .container .login_as_guest {
+  background-color: #c3e9e7;
+  border-radius: 3em;
+  width: 150px;
+  padding-left: 10px;
 }
 
 /*HOME*/
