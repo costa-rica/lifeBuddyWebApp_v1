@@ -10,6 +10,16 @@ from sqlalchemy import func
 from scipy.optimize import curve_fit
 import numpy as np
 
+from bokeh.plotting import figure, output_file
+from bokeh.embed import components
+from bokeh.resources import CDN
+from bokeh.io import curdoc
+from bokeh.themes import built_in_themes
+from bokeh.models import ColumnDataSource, Grid, LinearAxis, Plot, Text
+import pytz
+import zoneinfo
+from pytz import timezone
+
 def plot_text_format(x):
     return ('%.1f' % x).rstrip('0').rstrip('.')
 
@@ -35,7 +45,7 @@ def json_dict_to_dfs(polar_data_dict):
             df1['var_periodicity']='seconds' #must come from input data polar h1 only does seconds
             df1['var_timezone_utc_delta_in_mins']=j['exercises'][0]['timezoneOffset']
             df1['time_stamp_utc']=datetime.datetime.utcnow()
-            df1['user_id']=1#comes from app current_user.id
+            df1['user_id']=current_user.id#comes from app current_user.id
             df1['source_filename']=i
             df1['description_id']=max_id
             df1['datetime_of_activity']=datetime.datetime.strptime(j['startTime'],'%Y-%m-%dT%H:%M:%S.%f')
@@ -122,3 +132,40 @@ def json_dict_to_dfs(polar_data_dict):
     
     return (df_description,df_measure)
     
+
+def chart_scripts(df_health_description):
+    colNames=[i[len('health_description_'):] for i in list(df_health_description.columns)]
+    col_names_dict={i:j for i,j in zip(list(df_health_description.columns),colNames)}
+    df_health_description.rename(columns=col_names_dict, inplace=True)
+
+    df1=df_health_description.loc[df_health_description.metric1_carido<100]
+    df1=df1.sort_values(by=['datetime_of_activity'])
+    x_obs=[ datetime.datetime.strptime(date_string,'%Y-%m-%d %H:%M:%S.%f') for date_string in df1.datetime_of_activity]
+    y_obs=df1.metric1_carido
+    y_obs_formatted=[ plot_text_format(i) for i in y_obs]
+
+
+    date_end=datetime.datetime.strptime(df1.datetime_of_activity.to_list()[-1],'%Y-%m-%d %H:%M:%S.%f')
+    date_end=date_end+ timedelta(days=1)
+    date_start=date_end- timedelta(days=7)
+
+
+    source = ColumnDataSource(dict(x=x_obs, y=y_obs, text=y_obs_formatted))
+    p2=figure(x_axis_label='Time',x_axis_type='datetime',width=880, height=400, toolbar_location=None,
+              tools='xwheel_zoom,xpan',active_scroll='xwheel_zoom',x_range=(date_start, date_end))
+    p2.yaxis.major_label_text_color='black'
+
+    glyph = Text(text="text", text_color="#d6fbf7")
+
+    p2.add_glyph(source, glyph)
+
+
+    script1, div1 = components(p2, theme='night_sky')
+
+    return (script1, div1)
+
+
+
+
+
+

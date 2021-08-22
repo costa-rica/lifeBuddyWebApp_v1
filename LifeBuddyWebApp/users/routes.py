@@ -19,6 +19,8 @@ import xlsxwriter
 from flask_mail import Message
 from LifeBuddyWebApp.users.utils import save_picture, send_reset_email, userPermission, \
     formatExcelHeader
+import pytz
+import zoneinfo
 
 users = Blueprint('users', __name__)
 
@@ -92,15 +94,24 @@ def logout():
 @users.route('/account', methods=["GET","POST"])
 @login_required
 def account():
+    
+    user_record=db.session.query(User).filter(User.id==current_user.id).first()
+    timezone_list=zoneinfo.available_timezones()
+    default_timezone=user_record.user_timezone
+    
     form=UpdateAccountForm()
     if form.validate_on_submit():
         if form.picture.data:
             picture_file = save_picture(form.picture.data)
             current_user.image_file = picture_file
+        
+        formDict = request.form.to_dict()
+        current_user.user_timezone=formDict.get('user_timezone_input')
+        
         current_user.username = form.username.data
         current_user.email = form.email.data
         currentUser=User.query.get(current_user.id)
-        currentUser.theme=request.form.get('darkTheme')
+
         db.session.commit()
         flash(f'Your account has been updated {current_user.email}!', 'success')
         return redirect(url_for('users.home')) #CS says want a new redirect due to "post-get-redirect pattern"
@@ -117,7 +128,8 @@ def account():
         # db.session.commit()
         
     image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
-    return render_template('account.html', title='account', image_file=image_file, form=form)
+    return render_template('account.html', title='account', image_file=image_file, form=form,
+        timezone_list=timezone_list,default_timezone=default_timezone)
 
 
 @users.route('/reset_password', methods = ["GET", "POST"])

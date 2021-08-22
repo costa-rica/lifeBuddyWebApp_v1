@@ -8,22 +8,49 @@
         <form method="POST" action="" enctype="multipart/form-data">
             
             <h1>LifeBuddy Dashboard</h1>
-            <div class="forecast_chart_div">
-                <label>Forecast Chart</label>
-            </div>
+
 
             <div class="current_chart_div">
-                <label>Current Chart</label>
-                <div class="div1">
+                <label><h3>Personal Timeline</h3></label>
+                <div class="bokeh_div">
   
                     {{ div1|safe }}
                 </div>
-                
-
-
-
-
             </div>
+
+            <div class="enter_activity">
+                
+                <label><h3>Enter Activity:</h3></label>
+                <div class="enter_activity_sub">
+                    <div>
+                        <label>Date:</label>
+                        <input type="date" value="{{ default_date }}" name="activity_date">
+                        <label>Time:</label>
+                        <input type="time" value="{{ default_time }}" name="activity_time">
+
+                    </div>
+
+                    
+                        <div class="enter_activity_sub2">
+                            <label>Activity:</label>
+                            <input type="text" placeholder="required (30 char max)" name="var_activity">
+                        </div>
+                        <div class="enter_activity_sub2">
+                            <label>Activity Notes:</label>
+                            <textarea  name="activity_notes" rows=2  placeholder="optional"></textarea>
+                        </div>
+                        <div class="enter_activity_sub2">
+                            <label>Weight (lbs):</label>
+                            <input type="text" placeholder="optional" name="metric3">
+                        </div>
+                        
+                    </div>
+                    <button type="submit" class="btn btn-primary btn_right" name="submit_button" value=True>Submit</button>
+
+                </div>
+            </div>
+
+
             <a href="{{ url_for('main.upload_health_data') }}">Upload Health Data</a>
         </form>
     </div>

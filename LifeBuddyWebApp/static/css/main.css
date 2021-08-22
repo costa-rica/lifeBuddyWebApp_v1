@@ -61,38 +61,80 @@ section.Home .home_link_list {
 /*Dashboard*/
 section.dashboard {
   padding: 100px 10px 100px 5px;
-}
+  /*
+    .dict_search {
+        display: grid;
+        grid-template-columns: 20% 21% auto;
+        height: 20px;
 
-section.dashboard .forecast_chart_div {
-  margin: 50px 0 0 0;
-  width: 1000px;
-  height: 200px;
-  background-color: #5fc45f;
-  border-radius: 3em;
-}
-
-section.dashboard .forecast_chart_div > label {
-  padding: 5px 0 0 30px;
+        /*grid-template-columns: repeat(auto-fill,
+            minmax(19rem, 1fr), minmax(19rem, 1fr));
+    }
+    */
+  /*
+    .dict_search div:nth-child(3n-2) {
+        justify-self: end;
+        padding-right: 2%;
+        padding-top:1em;
+       
+        height:20px;
+    }
+*/
 }
 
 section.dashboard .current_chart_div {
   margin: 50px 0 0 0;
   width: 1000px;
-  height: 400px;
+  height: 500px;
   background-color: #9ec59e;
   border-radius: 3em;
+  border: 1px solid #dddddd;
+  border-color: #b3adad;
+  border-width: .5em;
 }
 
 section.dashboard .current_chart_div > label {
   padding: 5px 0 0 30px;
 }
 
-section.dashboard .div1 {
+section.dashboard .bokeh_div {
   padding-left: 50px;
   background: black;
   margin-right: 10px;
   margin-left: 10px;
   border-radius: 1.5em;
+}
+
+section.dashboard .enter_activity {
+  margin: 80px 0 0 0;
+  border: 1px solid #dddddd;
+  background-color: tan;
+  border-radius: 3em;
+  border-color: #b3adad;
+  border-width: .5em;
+  width: 1000px;
+  height: 300px;
+}
+
+section.dashboard .enter_activity > label {
+  padding: 10px 0 0 10px;
+}
+
+section.dashboard .enter_activity_sub {
+  padding: 10px 0 0 60px;
+  margin-right: 50px;
+}
+
+section.dashboard .enter_activity_sub2 {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 13% auto;
+      grid-template-columns: 13% auto;
+}
+
+section.dashboard .btn_right {
+  float: right;
+  margin-right: 150px;
 }
 
 /*Upload Health Data*/

@@ -17,7 +17,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.Text, unique=True, nullable=False)
     image_file = db.Column(db.Text,nullable=False, default='default.jpg')
     password = db.Column(db.Text, nullable=False)
-    user_timezone = db.Column(db.Text)
+    user_timezone = db.Column(db.Text, default='US/Eastern')
     permission = db.Column(db.Text)
     theme = db.Column(db.Text)
     time_stamp = db.Column(db.DateTime, default=datetime.now)
@@ -69,9 +69,7 @@ class Health_description(db.Model):
     metric3=db.Column(db.Float)
     metric4=db.Column(db.Float)
     metric5=db.Column(db.Float)
-    
-    
-    
+    note=db.Column(db.Text)
 
     def __repr__(self):
         return f"Health_description('{self.id}',var_activity:'{self.var_activity}'," \
@@ -92,7 +90,6 @@ class Health_measure(db.Model):
     longitude=db.Column(db.Float)
     latitude=db.Column(db.Float)
     altitude=db.Column(db.Float)
-    
     
     def __repr__(self):
         return f"Variables('{self.id}',description_id:'{self.description_id}'," \
