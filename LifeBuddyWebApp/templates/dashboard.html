@@ -2,6 +2,7 @@
 {% block title %} LB Dashboard {% endblock %}
 {% block main %}
 
+
 <section class="dashboard">
     <div class="container">
         <form method="POST" action="" enctype="multipart/form-data">
@@ -13,9 +14,25 @@
 
             <div class="current_chart_div">
                 <label>Current Chart</label>
+                <div class="div1">
+  
+                    {{ div1|safe }}
+                </div>
+                
+
+
+
+
             </div>
             <a href="{{ url_for('main.upload_health_data') }}">Upload Health Data</a>
         </form>
     </div>
 </section>
+
+
+<script src="{{ cdn_js[0] }}" crossorigin="anonymous"></script>
+<script type="text/javascript">
+    Bokeh.set_log_level("info");
+</script>
+{{ script1|safe }}
 {% endblock %}

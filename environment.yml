@@ -1,0 +1,16 @@
+name: lifeBuddy
+channels:
+  - defaults
+dependencies:
+  - pandas
+  - flask
+  - flask-sqlalchemy
+  - flask-bcrypt
+  - flask-login
+  - notebook
+  - jupyter
+  - scipy
+  - matplotlib
+  - xlrd
+  - openpyxl
+prefix: C:\tools\miniconda3\envs\lifeBuddy

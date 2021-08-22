@@ -80,14 +80,23 @@ section.dashboard {
     .current_chart_div{
         margin: 50px 0 0 0;
         width: 1000px;
-        height: 200px;
+        height: 400px;
         background-color: rgb(158, 197, 158);
         border-radius: 3em;
+
 
     }
     .current_chart_div > label{
         padding: 5px 0 0 30px;
     }
+    .div1{
+        padding-left: 50px;
+        background: black;
+        margin-right: 10px;
+        margin-left:10px;
+        border-radius: 1.5em;
+    }
+
 }
 
 

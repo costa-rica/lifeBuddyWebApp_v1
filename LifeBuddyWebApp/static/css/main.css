@@ -78,13 +78,21 @@ section.dashboard .forecast_chart_div > label {
 section.dashboard .current_chart_div {
   margin: 50px 0 0 0;
   width: 1000px;
-  height: 200px;
+  height: 400px;
   background-color: #9ec59e;
   border-radius: 3em;
 }
 
 section.dashboard .current_chart_div > label {
   padding: 5px 0 0 30px;
+}
+
+section.dashboard .div1 {
+  padding-left: 50px;
+  background: black;
+  margin-right: 10px;
+  margin-left: 10px;
+  border-radius: 1.5em;
 }
 
 /*Upload Health Data*/

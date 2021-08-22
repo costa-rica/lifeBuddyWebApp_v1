@@ -7,9 +7,10 @@ if os.environ.get('COMPUTERNAME')=='CAPTAIN2020':
 # elif os.environ.get('USER')=='sanjose':
     # with open('/home/sanjose/Documents/environments/config.json') as config_file:
         # config = json.load(config_file)
-# else:
-    # with open('/home/ubuntu/environments/config.json') as config_file:
-        # config = json.load(config_file)
+else:
+    with open('/home/ubuntu/environments/config.json') as config_file:
+        config = json.load(config_file)
+
 
 
 

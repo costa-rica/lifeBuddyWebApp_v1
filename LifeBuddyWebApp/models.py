@@ -56,14 +56,20 @@ class Post(db.Model):
 
 class Health_description(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    datetime_of_activity=db.Column(db.DateTime)
     var_activity = db.Column(db.Text) #walking, running, empty is ok for something like mood
     var_type = db.Column(db.Text) #heart rate, mood, weight, etc.
     var_periodicity = db.Column(db.Text)
-    var_unit = db.Column(db.Text)
     var_timezone_utc_delta_in_mins = db.Column(db.Float) #difference bewteen utc and timezone of exercise
     time_stamp_utc = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id=db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     source_filename =db.Column(db.Text)
+    metric1_carido=db.Column(db.Float)
+    metric2_session_duration=db.Column(db.Float)
+    metric3=db.Column(db.Float)
+    metric4=db.Column(db.Float)
+    metric5=db.Column(db.Float)
+    
     
     
 
@@ -78,6 +84,15 @@ class Health_measure(db.Model):
     description_id=db.Column(db.Integer, db.ForeignKey('health_description.id'), nullable=False)
     var_datetime_utc = db.Column(db.DateTime, nullable=True)
     var_value = db.Column(db.Text)
+    var_unit = db.Column(db.Text)
+    var_type = db.Column(db.Text)
+    heart_rate = db.Column(db.Integer)
+    speed=db.Column(db.Float)
+    distance=db.Column(db.Float)
+    longitude=db.Column(db.Float)
+    latitude=db.Column(db.Float)
+    altitude=db.Column(db.Float)
+    
     
     def __repr__(self):
         return f"Variables('{self.id}',description_id:'{self.description_id}'," \

@@ -191,7 +191,7 @@ def database_page():
             print('path of reports:::',os.path.join(current_app.config['FILES_DATABASE'],str(workbook_name)))
             excelObj.close()
             print('excel object close')
-            # return send_from_directory(current_app.config['FILES_DATABASE'],workbook_name, as_attachment=True)
+            # return send_from_directory(current_user.config['FILES_DATABASE'],workbook_name, as_attachment=True)
             return redirect(url_for('users.database_page'))
         elif formDict.get('download_db_workbook'):
             return redirect(url_for('users.download_db_workbook'))
@@ -225,9 +225,9 @@ def download_db_workbook():
     
     return send_from_directory(os.path.join(current_app.config['FILES_DATABASE']),workbook_name, as_attachment=True)
     
-    # return send_from_directory(os.path.join(current_app.config['FILES_DATABASE']),workbook_name, as_attachment=True)
+    # return send_from_directory(os.path.join(current_user.config['FILES_DATABASE']),workbook_name, as_attachment=True)
     
-    # return send_from_directory(os.path.join(current_app.root_path, 'static','files_database'),"database_table.xlsx", as_attachment=True)
+    # return send_from_directory(os.path.join(current_user.root_path, 'static','files_database'),"database_table.xlsx", as_attachment=True)
     # return send_from_directory('D:\\OneDrive\\Documents\\professional\\20210610kmDashboard2.0\\fileShareApp\\static\\files_database',"database_table.xlsx", as_attachment=True)
 
 
