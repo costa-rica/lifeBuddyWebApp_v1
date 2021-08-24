@@ -15,10 +15,11 @@ from bokeh.embed import components
 from bokeh.resources import CDN
 from bokeh.io import curdoc
 from bokeh.themes import built_in_themes
-from bokeh.models import ColumnDataSource, Grid, LinearAxis, Plot, Text
+from bokeh.models import ColumnDataSource, Grid, LinearAxis, Plot, Text, Span
 import pytz
 import zoneinfo
 from pytz import timezone
+import time
 
 def plot_text_format(x):
     return ('%.1f' % x).rstrip('0').rstrip('.')
@@ -140,27 +141,45 @@ def chart_scripts(df_health_description):
 
     df1=df_health_description.loc[df_health_description.metric1_carido<100]
     df1=df1.sort_values(by=['datetime_of_activity'])
-    x_obs=[ datetime.datetime.strptime(date_string,'%Y-%m-%d %H:%M:%S.%f') for date_string in df1.datetime_of_activity]
-    y_obs=df1.metric1_carido
-    y_obs_formatted=[ plot_text_format(i) for i in y_obs]
-
+    obs_x1=[ datetime.datetime.strptime(date_string,'%Y-%m-%d %H:%M:%S.%f') for date_string in df1.datetime_of_activity]
+    obs_y1=df1.metric1_carido
+    obs_y1_formatted=[ plot_text_format(i) for i in obs_y1]
 
     date_end=datetime.datetime.strptime(df1.datetime_of_activity.to_list()[-1],'%Y-%m-%d %H:%M:%S.%f')
     date_end=date_end+ timedelta(days=1)
     date_start=date_end- timedelta(days=7)
 
-
-    source = ColumnDataSource(dict(x=x_obs, y=y_obs, text=y_obs_formatted))
-    p2=figure(x_axis_label='Time',x_axis_type='datetime',width=880, height=400, toolbar_location=None,
-              tools='xwheel_zoom,xpan',active_scroll='xwheel_zoom',x_range=(date_start, date_end))
-    p2.yaxis.major_label_text_color='black'
-
-    glyph = Text(text="text", text_color="#d6fbf7")
-
-    p2.add_glyph(source, glyph)
+    #get x and y's for activity
+    df2=df_health_description.loc[(df_health_description.var_type=='Activity') ]
+    #1 time (obs_x)
+    obs_x2=[ datetime.datetime.strptime(date_string,'%Y-%m-%d %H:%M:%S.%f') for date_string in df2.datetime_of_activity]
+    #3 activity (obs_y2)
+    obs_y2=df2.var_activity.to_list()
 
 
-    script1, div1 = components(p2, theme='night_sky')
+
+    fig1=figure(toolbar_location=None,tools='xwheel_zoom,xpan',active_scroll='xwheel_zoom',
+                x_range=(date_start,date_end),y_range=(-10,90),width=800, height=300)
+
+    #add cardio_metric1
+    source1 = ColumnDataSource(dict(x=obs_x1, y=obs_y1, text=obs_y1_formatted))
+    glyph1 = Text(text="text", text_color="#d6fbf7")
+    fig1.add_glyph(source1, glyph1)
+
+    for a,b in zip(obs_x2,obs_y2):
+        #add activity data
+        source2 = ColumnDataSource(dict(x=[a], y=[80], text=[b]))
+        glyph2 = Text(text="text", text_color="#9aa6a5")
+        #add line for activity data
+        line_start_time=time.mktime(a.timetuple())*1000
+        important_time = Span(location=line_start_time, dimension='height', line_color="#9aa6a5", line_dash='dashed', line_width=3)
+        fig1.add_glyph(source2, glyph2)
+        fig1.add_layout(important_time)
+
+    fig1.add_glyph(source2, glyph2)
+
+
+    script1, div1 = components(fig1, theme='night_sky')
 
     return (script1, div1)
 

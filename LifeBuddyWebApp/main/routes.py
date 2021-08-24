@@ -22,6 +22,7 @@ from bokeh.models import ColumnDataSource, Grid, LinearAxis, Plot, Text
 import pytz
 import zoneinfo
 from pytz import timezone
+import time
 
 main = Blueprint('main', __name__)
 
@@ -34,14 +35,17 @@ def dashboard():
     user_record=db.session.query(User).filter(User.id==current_user.id).first()
     user_tz=user_record.user_timezone
     
-    au_tz = timezone(user_tz)
-    default_date=datetime.datetime.now(tz=au_tz).strftime("%Y-%m-%d")
-    default_time=datetime.datetime.now(tz=au_tz).strftime("%H:%M")
+    user_tz = timezone(user_tz)
+    default_date=datetime.datetime.now().astimezone(user_tz).strftime("%Y-%m-%d")
+    default_time=datetime.datetime.now().astimezone(user_tz).strftime("%H:%M")
+    
 
     #filter on user data only
     base_query_health_description=db.session.query(Health_description).filter(Health_description.user_id==1)
-    df_health_description=pd.read_sql(str(base_query_health_description)[:-1]+str(1),db.session.bind)
-    
+    if current_user.id==2:
+        df_health_description=pd.read_sql(str(base_query_health_description)[:-1]+str(1),db.session.bind)
+    else:
+        df_health_description=pd.read_sql(str(base_query_health_description)[:-1]+str(current_user.id),db.session.bind)
     if len(df_health_description)>0:
         
         script1, div1=chart_scripts(df_health_description)
@@ -55,20 +59,25 @@ def dashboard():
 
     if request.method == 'POST':
         formDict = request.form.to_dict()
-        print('formDcit:::',formDict)
-        # activity_date=formDict.get('activity_date')
-        # activity_time=formDict.get('activity_time')
         
         #convert this date time to utc
-        date_time_obj = datetime.datetime.strptime(formDict.get('activity_date')+formDict.get('activity_time'), '%Y-%m-%d%H:%M')
+        date_time_obj_unaware = datetime.datetime.strptime(formDict.get('activity_date')+formDict.get('activity_time'), '%Y-%m-%d%H:%M')
+        date_time_obj_aware=user_tz.localize(date_time_obj_unaware)
+        timezone_offset = date_time_obj_aware.utcoffset().total_seconds()/60
+        
         var_activity=formDict.get('var_activity')
         activity_notes=formDict.get('activity_notes')
         metric3=formDict.get('metric3')
         
         # var_timezone_utc_delta_in_mins get this by using the: cur_zone_time.utcoffset().total_seconds()/60
-        update_activity=Health_description(datetime_of_activity=date_time_obj,var_activity=var_activity,var_type='Activity',
-            var_timezone_utc_delta_in_mins=120, metric3=formDict.get('metric3'), user_id=current_user.id,
-            source_filename='web application')
+        if formDict.get('metric3'):
+            update_activity=Health_description(datetime_of_activity=date_time_obj_aware,var_activity=var_activity,var_type='Activity',
+                var_timezone_utc_delta_in_mins=timezone_offset, metric3=formDict.get('metric3'), user_id=current_user.id,
+                source_filename='web application')
+        else:
+            update_activity=Health_description(datetime_of_activity=date_time_obj_aware,var_activity=var_activity,var_type='Activity',
+                var_timezone_utc_delta_in_mins=timezone_offset, user_id=current_user.id,
+                source_filename='web application')
         db.session.add(update_activity)
         db.session.commit()
 
