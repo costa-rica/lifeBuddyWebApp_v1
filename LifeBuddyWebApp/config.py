@@ -24,6 +24,7 @@ class Config:
     MAIL_USERNAME = config.get('MAIL_USERNAME_KM')
     DEBUG = True
     UPLOADED_FILES_FOLDER = os.path.join(os.path.dirname(__file__), 'static/files_uploaded')
+    BOKEH_THEME = config.get('BOKEH_THEME')
     # UTILITY_FILES_FOLDER = os.path.join(os.path.dirname(__file__), 'static/files_utility')
     # QUERIES_FOLDER = os.path.join(os.path.dirname(__file__), 'static/queries')
     # FILES_DATABASE = os.path.join(os.path.dirname(__file__), 'static/files_database')

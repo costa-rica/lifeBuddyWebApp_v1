@@ -14,12 +14,13 @@ from bokeh.plotting import figure, output_file
 from bokeh.embed import components
 from bokeh.resources import CDN
 from bokeh.io import curdoc
-from bokeh.themes import built_in_themes
+from bokeh.themes import built_in_themes, Theme
 from bokeh.models import ColumnDataSource, Grid, LinearAxis, Plot, Text, Span
 import pytz
 import zoneinfo
 from pytz import timezone
 import time
+from flask import current_app
 
 def plot_text_format(x):
     return ('%.1f' % x).rstrip('0').rstrip('.')
@@ -156,35 +157,41 @@ def chart_scripts(df_health_description):
     #3 activity (obs_y2)
     obs_y2=df2.var_activity.to_list()
 
-
-
+    #start of jupyter notebook
     fig1=figure(toolbar_location=None,tools='xwheel_zoom,xpan',active_scroll='xwheel_zoom',
-                x_range=(date_start,date_end),y_range=(-10,90),width=800, height=300)
+                x_range=(date_start,date_end),y_range=(-10,90),width=900, height=400)
 
     #add cardio_metric1
     source1 = ColumnDataSource(dict(x=obs_x1, y=obs_y1, text=obs_y1_formatted))
-    glyph1 = Text(text="text", text_color="#d6fbf7")
+    glyph1 = Text(text="text",text_font_size={'value': '10px'})
     fig1.add_glyph(source1, glyph1)
 
     for a,b in zip(obs_x2,obs_y2):
         #add activity data
         source2 = ColumnDataSource(dict(x=[a], y=[80], text=[b]))
-        glyph2 = Text(text="text", text_color="#9aa6a5")
+        glyph2 = Text(text="text", text_color="#414444", text_font_size={'value': '10px'},
+                     x_offset=-10,angle=-1.58)
+        
         #add line for activity data
         line_start_time=time.mktime(a.timetuple())*1000
-        important_time = Span(location=line_start_time, dimension='height', line_color="#9aa6a5", line_dash='dashed', line_width=3)
+        important_time = Span(location=line_start_time, dimension='height', line_color="#414444", line_dash='dashed', line_width=1)
         fig1.add_glyph(source2, glyph2)
         fig1.add_layout(important_time)
 
     fig1.add_glyph(source2, glyph2)
+    fig1.ygrid.grid_line_color = None
+    fig1.yaxis.major_label_text_color = None
+    fig1.yaxis.major_tick_line_color = None
+    fig1.yaxis.minor_tick_line_color = None
 
+    theme_1=curdoc().theme = Theme(filename=current_app.config['BOKEH_THEME'])
 
-    script1, div1 = components(fig1, theme='night_sky')
+    script1, div1 = components(fig1, theme=theme_1)
 
     return (script1, div1)
 
 
-
+# current_app.config['BOKEH_THEME'])
 
 
 

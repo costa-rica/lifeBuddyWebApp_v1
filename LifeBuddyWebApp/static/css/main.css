@@ -86,7 +86,7 @@ section.dashboard .current_chart_div {
   margin: 50px 0 0 0;
   width: 1000px;
   height: 500px;
-  background-color: #9ec59e;
+  background-color: #77b378;
   border-radius: 3em;
   border: 1px solid #dddddd;
   border-color: #b3adad;
@@ -98,8 +98,7 @@ section.dashboard .current_chart_div > label {
 }
 
 section.dashboard .bokeh_div {
-  padding-left: 50px;
-  background: black;
+  padding-left: 20px;
   margin-right: 10px;
   margin-left: 10px;
   border-radius: 1.5em;
