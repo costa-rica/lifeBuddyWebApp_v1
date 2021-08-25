@@ -39,50 +39,85 @@ def dashboard():
     default_date=datetime.datetime.now().astimezone(user_tz).strftime("%Y-%m-%d")
     default_time=datetime.datetime.now().astimezone(user_tz).strftime("%H:%M")
     
-
     #filter on user data only
     base_query_health_description=db.session.query(Health_description).filter(Health_description.user_id==1)
+    
     if current_user.id==2:
         df_health_description=pd.read_sql(str(base_query_health_description)[:-1]+str(1),db.session.bind)
     else:
         df_health_description=pd.read_sql(str(base_query_health_description)[:-1]+str(current_user.id),db.session.bind)
+    
     if len(df_health_description)>0:
-        
         script1, div1=chart_scripts(df_health_description)
         cdn_js=CDN.js_files
         cdn_css=CDN.css_files
     else:
-        div1=None
-        script1=None
-        cdn_js=None
-        cdn_css=None
+        div1=None;script1=None;cdn_js=None;cdn_css=None
+
+    #Timle line table
+    df_sub=df_health_description[['id', 'datetime_of_activity', 'var_activity','metric1_carido']].copy()
+    df_sub=df_sub.sort_values(by='datetime_of_activity', ascending=False)
+    df_sub.datetime_of_activity=df_sub['datetime_of_activity'].astype('datetime64[ns]')
+    df_sub.datetime_of_activity=pd.to_datetime(df_sub["datetime_of_activity"].dt.strftime('%m/%d/%Y %H:%M'))
+    table_lists=df_sub.values.tolist()
+    for i in table_lists:
+        if i[3]=='nan':
+            print('fire')
+            i[3]='not exercise'
+        else:
+            i[3]='{0:.3g}'.format(i[3])
+        
+    
+    if len(table_lists)==0:
+        no_hits_flag=True
+    else:
+        no_hits_flag=False
 
     if request.method == 'POST':
         formDict = request.form.to_dict()
-        
-        #convert this date time to utc
-        date_time_obj_unaware = datetime.datetime.strptime(formDict.get('activity_date')+formDict.get('activity_time'), '%Y-%m-%d%H:%M')
-        date_time_obj_aware=user_tz.localize(date_time_obj_unaware)
-        timezone_offset = date_time_obj_aware.utcoffset().total_seconds()/60
-        
-        var_activity=formDict.get('var_activity')
-        activity_notes=formDict.get('activity_notes')
-        metric3=formDict.get('metric3')
-        
-        # var_timezone_utc_delta_in_mins get this by using the: cur_zone_time.utcoffset().total_seconds()/60
-        if formDict.get('metric3'):
-            update_activity=Health_description(datetime_of_activity=date_time_obj_aware,var_activity=var_activity,var_type='Activity',
-                var_timezone_utc_delta_in_mins=timezone_offset, metric3=formDict.get('metric3'), user_id=current_user.id,
-                source_filename='web application')
-        else:
-            update_activity=Health_description(datetime_of_activity=date_time_obj_aware,var_activity=var_activity,var_type='Activity',
-                var_timezone_utc_delta_in_mins=timezone_offset, user_id=current_user.id,
-                source_filename='web application')
-        db.session.add(update_activity)
-        db.session.commit()
+        print('formDcit::::',formDict)
+        if formDict.get('submit_activity'):
+            #convert this date time to utc
+            date_time_obj_unaware = datetime.datetime.strptime(formDict.get('activity_date')+formDict.get('activity_time'), '%Y-%m-%d%H:%M')
+            date_time_obj_aware=user_tz.localize(date_time_obj_unaware)
+            timezone_offset = date_time_obj_aware.utcoffset().total_seconds()/60
+            
+            var_activity=formDict.get('var_activity')
+            activity_notes=formDict.get('activity_notes')
+            metric3=formDict.get('metric3')
+            
+            return redirect(url_for('main.add_activity', date_time_obj_aware=date_time_obj_aware,timezone_offset=timezone_offset))
 
+        elif formDict.get('submit_upload_health'):
+            return redirect(url_for('main.upload_health_data'))
+    
     return render_template('dashboard.html', div1=div1, script1=script1, cdn_js=cdn_js, cdn_css=cdn_css,
-        default_date=default_date, default_time=default_time)
+        default_date=default_date, default_time=default_time, table_data=table_lists, no_hits_flag=no_hits_flag,
+        len=len)
+
+
+@main.route("/add_activity",methods=["GET","POST"])
+@login_required
+def add_activity():
+    print('requests:::',request.args)
+    date_time_obj_aware=request.args('date_time_obj_aware')
+    print('date_time_obj_aware:::::', date_time_obj_aware)
+    
+    # var_timezone_utc_delta_in_mins get this by using the: cur_zone_time.utcoffset().total_seconds()/60
+    if formDict.get('metric3'):
+        update_activity=Health_description(datetime_of_activity=date_time_obj_aware,var_activity=var_activity,var_type='Activity',
+            var_timezone_utc_delta_in_mins=timezone_offset, metric3=formDict.get('metric3'), user_id=current_user.id,
+            source_filename='web application')
+    else:
+        update_activity=Health_description(datetime_of_activity=date_time_obj_aware,var_activity=var_activity,var_type='Activity',
+            var_timezone_utc_delta_in_mins=timezone_offset, user_id=current_user.id,
+            source_filename='web application')
+    db.session.add(update_activity)
+    db.session.commit()
+    return redirect(url_for('main.dashboard'))
+    # return render_template('dashboard.html', div1=div1, script1=script1, cdn_js=cdn_js, cdn_css=cdn_css,
+        # default_date=default_date, default_time=default_time)
+
 
 
 @main.route("/upload health data", methods=["GET","POST"])

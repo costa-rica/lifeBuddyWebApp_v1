@@ -76,7 +76,6 @@ section.dashboard {
         border: 1px solid #dddddd;
         border-color: rgb(179, 173, 173);
         border-width: .5em;
-
     }
     .current_chart_div > label{
         padding: 5px 0 0 30px;
@@ -105,12 +104,10 @@ section.dashboard {
     .enter_activity_sub{
         padding: 10px 0 0 60px;
         margin-right: 50px;
-
     }
     .enter_activity_sub2{
         display: grid;
         grid-template-columns: 13% auto;
-
     }
 
     .btn_right{
@@ -118,26 +115,68 @@ section.dashboard {
         margin-right:150px;
     }
 
-/*
-    .dict_search {
-        display: grid;
-        grid-template-columns: 20% 21% auto;
-        height: 20px;
-
-        /*grid-template-columns: repeat(auto-fill,
-            minmax(19rem, 1fr), minmax(19rem, 1fr));
+    .modal_header_add{
+        background-color: rgb(179, 173, 173);
+        border-bottom: 0 none;
     }
-    */
-    /*
-    .dict_search div:nth-child(3n-2) {
-        justify-self: end;
-        padding-right: 2%;
-        padding-top:1em;
-       
-        height:20px;
+    .modal_body_add{
+        background-color: tan;
     }
-*/
+    .modal-footer {
+        border-top: 0 none;
+    }
+    .btn_blue1{
+        background-color: rgb(53, 162, 200);
+        border-color: rgb(170, 170, 170);
+        border-width: .3em;
+    }
+    .btn_green1{
+        background-color: rgb(53, 200, 162);
+        border-color: rgb(170, 170, 170);
+        border-width: .3em;
+    }
 
+
+    .buttons{
+        margin-top: 20px;
+        margin-left: 50px;
+        display: flex;
+        justify-content: space-between;
+        width: 800px;
+    }
+
+    .timeline_records_div{
+        margin: 50px 0 0 0;
+        width: 1000px;
+        height: 600px;
+        background-color: rgb(119, 179, 120);
+        border-radius: 3em;
+        border: 1px solid #dddddd;
+        border-color: rgb(179, 173, 173);
+        border-width: .5em;
+    }
+    .timeline_records_div > label{
+        padding: 5px 0 0 30px;
+    }
+
+    .table_contents {
+
+        font-size: .7em;
+        background: #77b3af;
+        margin: 0 0 0 20px;
+        padding: 3px;
+        border-color: #525252;
+        border-style: solid;
+        border-width: 1px;
+        width: 95%;
+      }
+
+.dash_id_button:hover {
+    background: #E54E4E;
+    padding: 3px 7px 5px;
+    top: -11px;
+    right: -11px;
+}
 
 
 }

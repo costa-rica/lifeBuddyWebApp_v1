@@ -162,8 +162,10 @@ def chart_scripts(df_health_description):
                 x_range=(date_start,date_end),y_range=(-10,90),width=900, height=400)
 
     #add cardio_metric1
+    circle=fig1.circle(obs_x1,obs_y1, legend_label="Cardio Performance", fill_color='#c77711', line_color=None,
+                  size=20)
     source1 = ColumnDataSource(dict(x=obs_x1, y=obs_y1, text=obs_y1_formatted))
-    glyph1 = Text(text="text",text_font_size={'value': '10px'})
+    glyph1 = Text(text="text",text_font_size={'value': '10px'},x_offset=-10, y_offset=5)
     fig1.add_glyph(source1, glyph1)
 
     for a,b in zip(obs_x2,obs_y2):
@@ -184,6 +186,10 @@ def chart_scripts(df_health_description):
     fig1.yaxis.major_tick_line_color = None
     fig1.yaxis.minor_tick_line_color = None
 
+    fig1.legend.background_fill_color = "#578582"
+    fig1.legend.background_fill_alpha = 0.2
+    fig1.legend.border_line_color = None
+    
     theme_1=curdoc().theme = Theme(filename=current_app.config['BOKEH_THEME'])
 
     script1, div1 = components(fig1, theme=theme_1)

@@ -61,25 +61,6 @@ section.Home .home_link_list {
 /*Dashboard*/
 section.dashboard {
   padding: 100px 10px 100px 5px;
-  /*
-    .dict_search {
-        display: grid;
-        grid-template-columns: 20% 21% auto;
-        height: 20px;
-
-        /*grid-template-columns: repeat(auto-fill,
-            minmax(19rem, 1fr), minmax(19rem, 1fr));
-    }
-    */
-  /*
-    .dict_search div:nth-child(3n-2) {
-        justify-self: end;
-        padding-right: 2%;
-        padding-top:1em;
-       
-        height:20px;
-    }
-*/
 }
 
 section.dashboard .current_chart_div {
@@ -134,6 +115,76 @@ section.dashboard .enter_activity_sub2 {
 section.dashboard .btn_right {
   float: right;
   margin-right: 150px;
+}
+
+section.dashboard .modal_header_add {
+  background-color: #b3adad;
+  border-bottom: 0 none;
+}
+
+section.dashboard .modal_body_add {
+  background-color: tan;
+}
+
+section.dashboard .modal-footer {
+  border-top: 0 none;
+}
+
+section.dashboard .btn_blue1 {
+  background-color: #35a2c8;
+  border-color: #aaaaaa;
+  border-width: .3em;
+}
+
+section.dashboard .btn_green1 {
+  background-color: #35c8a2;
+  border-color: #aaaaaa;
+  border-width: .3em;
+}
+
+section.dashboard .buttons {
+  margin-top: 20px;
+  margin-left: 50px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  width: 800px;
+}
+
+section.dashboard .timeline_records_div {
+  margin: 50px 0 0 0;
+  width: 1000px;
+  height: 600px;
+  background-color: #77b378;
+  border-radius: 3em;
+  border: 1px solid #dddddd;
+  border-color: #b3adad;
+  border-width: .5em;
+}
+
+section.dashboard .timeline_records_div > label {
+  padding: 5px 0 0 30px;
+}
+
+section.dashboard .table_contents {
+  font-size: .7em;
+  background: #77b3af;
+  margin: 0 0 0 20px;
+  padding: 3px;
+  border-color: #525252;
+  border-style: solid;
+  border-width: 1px;
+  width: 95%;
+}
+
+section.dashboard .dash_id_button:hover {
+  background: #E54E4E;
+  padding: 3px 7px 5px;
+  top: -11px;
+  right: -11px;
 }
 
 /*Upload Health Data*/
