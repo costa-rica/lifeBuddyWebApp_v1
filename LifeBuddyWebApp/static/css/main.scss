@@ -57,9 +57,18 @@ section.LoginSection {
 /*HOME*/
 section.Home {
     padding: 100px 10px 100px 5px;
-
+    .home_link_list_div{
+        background-color: tan;
+        border-radius: 3em;
+        border: 1px solid #dddddd;
+        border-color: rgb(179, 173, 173);
+        border-width: .5em;
+        padding: 10px 0 10px 10px;
+        margin: 0 0 0 30px;
+    }
     .home_link_list{
         list-style-type: none;
+        font-size:larger;
     }
 }
 
@@ -169,16 +178,33 @@ section.dashboard {
         border-style: solid;
         border-width: 1px;
         width: 95%;
-      }
+    }
 
-.dash_id_button:hover {
-    background: #E54E4E;
-    padding: 3px 7px 5px;
-    top: -11px;
-    right: -11px;
-}
+    .dash_id_button:hover{
+        background: #E54E4E;
+        background-size: contain;
+        padding: 3px 7px 5px;
+        top: -5px;
+        right: -5px;
+    }
+    /*Delete modal*/
+    .hide_textbox{
+        display:none;
+    }
+    .modal_header_delete{
+        background-color: rgb(179, 173, 173);
+        border-bottom: 0 none;
+    }
+    .modal_body_delete{
+        background-color:tan;
+    }
 
+    .delete_button{
+        float:right;
+        background-color: rgb(192, 55, 55);
+        border: none;
 
+    }
 }
 
 

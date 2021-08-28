@@ -73,7 +73,7 @@ class Health_description(db.Model):
 
     def __repr__(self):
         return f"Health_description('{self.id}',var_activity:'{self.var_activity}'," \
-        f"'var_type: {self.var_type}', var_unit: '{self.var_unit}', time_stamp_utc: '{self.time_stamp_utc}')"
+        f"'var_type: {self.var_type}', datetime_of_activity: '{self.datetime_of_activity}', time_stamp_utc: '{self.time_stamp_utc}')"
     
 
 

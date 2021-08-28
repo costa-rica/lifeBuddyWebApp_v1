@@ -54,13 +54,25 @@ section.Home {
   padding: 100px 10px 100px 5px;
 }
 
+section.Home .home_link_list_div {
+  background-color: tan;
+  border-radius: 3em;
+  border: 1px solid #dddddd;
+  border-color: #b3adad;
+  border-width: .5em;
+  padding: 10px 0 10px 10px;
+  margin: 0 0 0 30px;
+}
+
 section.Home .home_link_list {
   list-style-type: none;
+  font-size: larger;
 }
 
 /*Dashboard*/
 section.dashboard {
   padding: 100px 10px 100px 5px;
+  /*Delete modal*/
 }
 
 section.dashboard .current_chart_div {
@@ -182,9 +194,29 @@ section.dashboard .table_contents {
 
 section.dashboard .dash_id_button:hover {
   background: #E54E4E;
+  background-size: contain;
   padding: 3px 7px 5px;
-  top: -11px;
-  right: -11px;
+  top: -5px;
+  right: -5px;
+}
+
+section.dashboard .hide_textbox {
+  display: none;
+}
+
+section.dashboard .modal_header_delete {
+  background-color: #b3adad;
+  border-bottom: 0 none;
+}
+
+section.dashboard .modal_body_delete {
+  background-color: tan;
+}
+
+section.dashboard .delete_button {
+  float: right;
+  background-color: #c03737;
+  border: none;
 }
 
 /*Upload Health Data*/

@@ -12,7 +12,7 @@ from sqlalchemy import func, desc
 import pandas as pd
 import json
 import zipfile
-from LifeBuddyWebApp.main.utils import json_dict_to_dfs, plot_text_format, chart_scripts
+from LifeBuddyWebApp.main.utils import json_dict_to_dfs, plot_text_format, chart_scripts, get_user_tz_util
 from bokeh.plotting import figure, output_file
 from bokeh.embed import components
 from bokeh.resources import CDN
@@ -26,21 +26,23 @@ import time
 
 main = Blueprint('main', __name__)
 
-
+# @main.route('/get_post_json', methods=['POST'])
+# def get_post_json():    
+    # data = request.get_json()
+    # data2=request.args
+    # print('here',data2, data)
+    # return jsonify(status="success", data=data)
 
 @main.route("/dashboard", methods=["GET","POST"])
 @login_required
 def dashboard():
-    
-    user_record=db.session.query(User).filter(User.id==current_user.id).first()
-    user_tz=user_record.user_timezone
-    
-    user_tz = timezone(user_tz)
+
+    user_tz = get_user_tz_util()
     default_date=datetime.datetime.now().astimezone(user_tz).strftime("%Y-%m-%d")
     default_time=datetime.datetime.now().astimezone(user_tz).strftime("%H:%M")
     
     #filter on user data only
-    base_query_health_description=db.session.query(Health_description).filter(Health_description.user_id==1)
+    base_query_health_description=db.session.query(Health_description).filter(Health_description.user_id==1)#1 is OK it get's replaced
     
     if current_user.id==2:
         df_health_description=pd.read_sql(str(base_query_health_description)[:-1]+str(1),db.session.bind)
@@ -55,17 +57,19 @@ def dashboard():
         div1=None;script1=None;cdn_js=None;cdn_css=None
 
     #Timle line table
-    df_sub=df_health_description[['id', 'datetime_of_activity', 'var_activity','metric1_carido']].copy()
-    df_sub=df_sub.sort_values(by='datetime_of_activity', ascending=False)
+    column_names=['ID','Date and Time','Type of Activity','Cardio Performance','Duration (seconds)','Weight']
+    
+    df_sub=df_health_description[['id', 'datetime_of_activity', 'var_activity','metric1_carido',
+                                 'metric2_session_duration','metric3']].copy()
     df_sub.datetime_of_activity=df_sub['datetime_of_activity'].astype('datetime64[ns]')
     df_sub.datetime_of_activity=pd.to_datetime(df_sub["datetime_of_activity"].dt.strftime('%m/%d/%Y %H:%M'))
+    df_sub.metric1_carido=df_sub.metric1_carido.round(2)
+    df_sub.metric2_session_duration=df_sub.metric2_session_duration.astype('Int64')
+    df_sub.metric2_session_duration=df_sub.metric2_session_duration.apply('{:,}'.format)
+    df_sub.metric2_session_duration=df_sub.metric2_session_duration.str.replace('<NA>','')
+    df_sub=df_sub.where(pd.notnull(df_sub), '')
+    df_sub=df_sub.sort_values(by=['datetime_of_activity'],ascending=False)
     table_lists=df_sub.values.tolist()
-    for i in table_lists:
-        if i[3]=='nan':
-            print('fire')
-            i[3]='not exercise'
-        else:
-            i[3]='{0:.3g}'.format(i[3])
         
     
     if len(table_lists)==0:
@@ -75,43 +79,81 @@ def dashboard():
 
     if request.method == 'POST':
         formDict = request.form.to_dict()
-        print('formDcit::::',formDict)
+        print('formDict::::',formDict)
         if formDict.get('submit_activity'):
-            #convert this date time to utc
-            date_time_obj_unaware = datetime.datetime.strptime(formDict.get('activity_date')+formDict.get('activity_time'), '%Y-%m-%d%H:%M')
-            date_time_obj_aware=user_tz.localize(date_time_obj_unaware)
-            timezone_offset = date_time_obj_aware.utcoffset().total_seconds()/60
-            
+
+            activity_date=formDict.get('activity_date')
+            activity_time=formDict.get('activity_time')
+
+            # activity_date_weight=formDict.get('activity_date_weight')
+            # activity_time_weight=formDict.get('activity_time_weight')
+                
             var_activity=formDict.get('var_activity')
             activity_notes=formDict.get('activity_notes')
-            metric3=formDict.get('metric3')
+            metric3=formDict.get('metric3_weight')
             
-            return redirect(url_for('main.add_activity', date_time_obj_aware=date_time_obj_aware,timezone_offset=timezone_offset))
+            return redirect(url_for('main.add_activity', activity_date=activity_date,activity_time=activity_time,
+                # activity_date_weight=activity_date_weight,activity_time_weight=activity_time_weight,
+                metric3=metric3,var_activity=var_activity, activity_notes=activity_notes))
 
-        elif formDict.get('submit_upload_health'):
+            
+        elif formDict.get('submit_upload_health')=='True':
             return redirect(url_for('main.upload_health_data'))
-    
+                
+        elif formDict.get('delete_record_id'):
+            delete_record_id=formDict.get('delete_record_id')
+            return redirect(url_for('main.delete_record', delete_record_id=delete_record_id))
+
+        
     return render_template('dashboard.html', div1=div1, script1=script1, cdn_js=cdn_js, cdn_css=cdn_css,
         default_date=default_date, default_time=default_time, table_data=table_lists, no_hits_flag=no_hits_flag,
-        len=len)
+        len=len,column_names=column_names)
 
+
+@main.route("/delete_record",methods=["GET","POST"])
+@login_required
+def delete_record():
+    delete_record_id=request.args.get('delete_record_id')
+    print('delete_record_id:::',delete_record_id)
+    db.session.query(Health_description).filter(Health_description.id==delete_record_id).delete()
+    db.session.query(Health_measure).filter(Health_measure.description_id==delete_record_id).delete()
+    db.session.commit()
+    return redirect(url_for('main.dashboard'))
 
 @main.route("/add_activity",methods=["GET","POST"])
 @login_required
 def add_activity():
-    print('requests:::',request.args)
-    date_time_obj_aware=request.args('date_time_obj_aware')
-    print('date_time_obj_aware:::::', date_time_obj_aware)
+    print('add_activity--requests:::',request.args)
+    
+    user_tz = get_user_tz_util()
+    
+    #convert this date time to utc
+    date_time_obj_unaware = datetime.datetime.strptime(request.args.get('activity_date')+request.args.get('activity_time'), '%Y-%m-%d%H:%M')
+    date_time_obj_aware=user_tz.localize(date_time_obj_unaware)
+    timezone_offset = date_time_obj_aware.utcoffset().total_seconds()/60
+
+    timezone_offset=request.args.get('timezone_offset')
+    weight=request.args.get('metric3')
+    var_activity=request.args.get('var_activity')
+    activity_notes=request.args.get('activity_notes')
+
     
     # var_timezone_utc_delta_in_mins get this by using the: cur_zone_time.utcoffset().total_seconds()/60
-    if formDict.get('metric3'):
-        update_activity=Health_description(datetime_of_activity=date_time_obj_aware,var_activity=var_activity,var_type='Activity',
-            var_timezone_utc_delta_in_mins=timezone_offset, metric3=formDict.get('metric3'), user_id=current_user.id,
-            source_filename='web application')
+    if weight:
+        # print('if weight.....', weight)
+        update_activity=Health_description(datetime_of_activity=date_time_obj_aware,var_type='Weight',var_activity='Weight',
+            var_timezone_utc_delta_in_mins=timezone_offset, user_id=current_user.id,source_filename='web application',
+            metric3=weight)
+        # print('update_activity::::', update_activity)
+    elif not activity_notes:
+        # print('not activity_notes')
+        update_activity=Health_description(datetime_of_activity=date_time_obj_aware,var_type='Activity',
+            var_timezone_utc_delta_in_mins=timezone_offset, user_id=current_user.id,source_filename='web application',
+            var_activity=var_activity)
     else:
-        update_activity=Health_description(datetime_of_activity=date_time_obj_aware,var_activity=var_activity,var_type='Activity',
-            var_timezone_utc_delta_in_mins=timezone_offset, user_id=current_user.id,
-            source_filename='web application')
+        update_activity=Health_description(datetime_of_activity=date_time_obj_aware,var_type='Activity',
+            var_timezone_utc_delta_in_mins=timezone_offset, user_id=current_user.id,source_filename='web application',
+            var_activity=var_activity, note=activity_notes)
     db.session.add(update_activity)
     db.session.commit()
     return redirect(url_for('main.dashboard'))
@@ -157,13 +199,13 @@ def upload_health_data():
             
             #get files to df dict
             df_description,df_measure=json_dict_to_dfs(polar_data_dict)
-            
+            session_count=len(df_description)
             
             #put data into tables
             df_description.to_sql('health_description',db.engine, if_exists='append',index=False)
             df_measure.to_sql('health_measure',db.engine, if_exists='append',index=False)
             
-            flash(f'Files uploaded', 'success')
+            flash(f'Files uploaded ' + str(session_count) +' new sessions', 'success')
             return redirect(url_for('main.upload_health_data'))
             
             

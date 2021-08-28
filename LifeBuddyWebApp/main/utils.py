@@ -29,6 +29,12 @@ def plot_text_format(x):
 def michaelis_m_eq_fix170(time_var, shape_var):
     return (170 *time_var)/(shape_var + time_var)
 
+def get_user_tz_util():
+    user_record=db.session.query(User).filter(User.id==current_user.id).first()
+    user_tz=user_record.user_timezone
+    user_tz = timezone(user_tz)
+    return user_tz
+
 def json_dict_to_dfs(polar_data_dict):
 
     df_description=pd.DataFrame()
@@ -117,7 +123,7 @@ def json_dict_to_dfs(polar_data_dict):
         df_measure_2=df_measure
         df_measure_2.var_datetime_utc=df_measure_2.var_datetime_utc.astype(str)    
 
-        #check that var_datetime_utc is same length as in df_measure
+        #check that var_datetime_utc variable/column is same length as in df_measure
         if len(health_measure_var_datetime.var_datetime_utc[0])>len(df_measure_2.var_datetime_utc[0]):
             cut_length=(len(health_measure_var_datetime.var_datetime_utc[0])-len(df_measure_2.var_datetime_utc[0]))*-1
             health_measure_var_datetime.var_datetime_utc=health_measure_var_datetime.var_datetime_utc.str[:cut_length]
@@ -136,51 +142,81 @@ def json_dict_to_dfs(polar_data_dict):
     
 
 def chart_scripts(df_health_description):
+    #clean df
     colNames=[i[len('health_description_'):] for i in list(df_health_description.columns)]
     col_names_dict={i:j for i,j in zip(list(df_health_description.columns),colNames)}
     df_health_description.rename(columns=col_names_dict, inplace=True)
+    df1=df_health_description.sort_values(by=['datetime_of_activity'])
 
-    df1=df_health_description.loc[df_health_description.metric1_carido<100]
-    df1=df1.sort_values(by=['datetime_of_activity'])
-    obs_x1=[ datetime.datetime.strptime(date_string,'%Y-%m-%d %H:%M:%S.%f') for date_string in df1.datetime_of_activity]
-    obs_y1=df1.metric1_carido
-    obs_y1_formatted=[ plot_text_format(i) for i in obs_y1]
-
-    date_end=datetime.datetime.strptime(df1.datetime_of_activity.to_list()[-1],'%Y-%m-%d %H:%M:%S.%f')
-    date_end=date_end+ timedelta(days=1)
+    
+    #assign default chart dates
+    # date_end=datetime.datetime.strptime(df1.datetime_of_activity.to_list()[-1],'%Y-%m-%d %H:%M:%S.%f')
+    date_end=datetime.datetime.strptime(df_health_description.datetime_of_activity.max(),
+        '%Y-%m-%d %H:%M:%S.%f')+ timedelta(days=1)
     date_start=date_end- timedelta(days=7)
+    
+    
+    #get cardio performance metric into lists
+    df1=df_health_description.loc[df_health_description.metric1_carido<100]#filter dataset
+    obs_x1=[ datetime.datetime.strptime(date_string,'%Y-%m-%d %H:%M:%S.%f') for date_string in df1.datetime_of_activity]
+    if len(df1)>0:
+        obs_y1=df1.metric1_carido
+        obs_y1_formatted=[ plot_text_format(i) for i in obs_y1]
 
-    #get x and y's for activity
-    df2=df_health_description.loc[(df_health_description.var_type=='Activity') ]
-    #1 time (obs_x)
+
+    #get activities into lists
+    df2=df_health_description.loc[(df_health_description.var_type=='Activity')]#filter dataset
     obs_x2=[ datetime.datetime.strptime(date_string,'%Y-%m-%d %H:%M:%S.%f') for date_string in df2.datetime_of_activity]
-    #3 activity (obs_y2)
-    obs_y2=df2.var_activity.to_list()
+    if len(df2)>0:
+        obs_y2=df2.var_activity.to_list()
 
-    #start of jupyter notebook
+        
+    #get weights into lists
+    df3=df_health_description.loc[(df_health_description.var_type=='Weight')]#filter dataset
+
+    obs_x3=[ datetime.datetime.strptime(date_string,'%Y-%m-%d %H:%M:%S.%f') for date_string in df3.datetime_of_activity]
+    if len(df3)>0:
+        obs_y3=df3.metric3.to_list()
+        obs_y3_min=min(obs_y3)
+        obs_y3_adjusted=[i-obs_y3_min+10 for i in obs_y3]
+    
+    #create figure object [start of jupyter notebook]
     fig1=figure(toolbar_location=None,tools='xwheel_zoom,xpan',active_scroll='xwheel_zoom',
                 x_range=(date_start,date_end),y_range=(-10,90),width=900, height=400)
 
     #add cardio_metric1
-    circle=fig1.circle(obs_x1,obs_y1, legend_label="Cardio Performance", fill_color='#c77711', line_color=None,
-                  size=20)
-    source1 = ColumnDataSource(dict(x=obs_x1, y=obs_y1, text=obs_y1_formatted))
-    glyph1 = Text(text="text",text_font_size={'value': '10px'},x_offset=-10, y_offset=5)
-    fig1.add_glyph(source1, glyph1)
+    if len(obs_x1)>0:
+        circle=fig1.circle(obs_x1,obs_y1, legend_label="Cardio Performance", fill_color='#c77711', line_color=None,
+                      size=20)
+        source1 = ColumnDataSource(dict(x=obs_x1, y=obs_y1, text=obs_y1_formatted))
+        glyph1 = Text(text="text",text_font_size={'value': '10px'},x_offset=-10, y_offset=5)
+        fig1.add_glyph(source1, glyph1)
 
-    for a,b in zip(obs_x2,obs_y2):
-        #add activity data
-        source2 = ColumnDataSource(dict(x=[a], y=[80], text=[b]))
-        glyph2 = Text(text="text", text_color="#414444", text_font_size={'value': '10px'},
-                     x_offset=-10,angle=-1.58)
-        
-        #add line for activity data
-        line_start_time=time.mktime(a.timetuple())*1000
-        important_time = Span(location=line_start_time, dimension='height', line_color="#414444", line_dash='dashed', line_width=1)
+    #add activities to fig1
+    if len(obs_x2)>0:
+        for a,b in zip(obs_x2,obs_y2):
+            #add activity data
+            source2 = ColumnDataSource(dict(x=[a], y=[80], text=[b]))
+            glyph2 = Text(text="text", text_color="#414444", text_font_size={'value': '10px'},
+                         x_offset=-10,angle=-1.58)
+            
+            #add line for activity data
+            line_start_time=time.mktime(a.timetuple())*1000
+            important_time = Span(location=line_start_time, dimension='height', line_color="#414444", line_dash='dashed', line_width=1)
+            fig1.add_glyph(source2, glyph2)
+            fig1.add_layout(important_time)
+
         fig1.add_glyph(source2, glyph2)
-        fig1.add_layout(important_time)
 
-    fig1.add_glyph(source2, glyph2)
+    #add weight as triangles
+    if len(obs_x3)>0:
+        triangle=fig1.triangle(obs_x3,obs_y3_adjusted, legend_label="Weight", fill_color='#c77711', line_color=None,
+                      size=20)
+        source3 = ColumnDataSource(dict(x=obs_x3, y=obs_y3_adjusted, text=obs_y3))
+        glyph3 = Text(text="text",text_font_size={'value': '10px'},x_offset=-10, y_offset=5)
+        fig1.add_glyph(source3, glyph3)
+
+
     fig1.ygrid.grid_line_color = None
     fig1.yaxis.major_label_text_color = None
     fig1.yaxis.major_tick_line_color = None
